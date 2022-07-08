@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// acts like an adapter accessing the service port, wiring together
 // describes the application endpoints and starts app
 func Start() {
 
@@ -16,7 +17,10 @@ func Start() {
 	router := mux.NewRouter()
 
 	// wiring
-	ch := CustomerHandlers{service.NewCustomerService(domain.NewCustomerRepositoryStub())}
+	// stub adapter - conforms to port (protocol, interface)
+	// ch := CustomerHandlers{service.NewCustomerService(domain.NewCustomerRepositoryStub())}
+	// database adapter - conforms to port (protocol, interface)
+	ch := CustomerHandlers{service.NewCustomerService(domain.NewCustomerRepositoryDB())}
 
 	// registers handler and pattern with default multiplexer
 	router.HandleFunc("/customers", ch.getAllCustomers).Methods(http.MethodGet)

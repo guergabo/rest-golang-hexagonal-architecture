@@ -1,6 +1,6 @@
 package domain
 
-// business logic - what is a customer
+// business logic - what is a customer, domain object
 type Customer struct {
 	Id          string
 	Name        string
@@ -10,7 +10,7 @@ type Customer struct {
 	Status      string
 }
 
-// primary port - service interface
+// primary port - service interface in the service package
 
 // secondary port - repository interface
 // help us find all the customers from the server side

@@ -1,5 +1,6 @@
 package domain
 
+// can replace this adapter with database adapter etc.
 // stub adapter, mocking the database of customers
 // should implement FindAll() function
 type CustomerRepositoryStub struct {

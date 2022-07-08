@@ -41,6 +41,14 @@ that way behavior can be tested independently from anything else.
 2. Dependencies go inside, the one who is triggering has to know the dependency
 3. The boundaries are isolated by interfaces
 
+Built for portability and ease of replacing parts -
+Ports (External) - entry point into the system
+Adapter (middle) - get information in and out of a port (middleman)
+Application Services (thin layer) - the conductors, talk directly to adapters, should not house business logic
+Domain (logic) -
+
+Adapters never communicate directly to other adapters this allows very loose
+coupling that will allow replacement etc.
 */
 package main
 

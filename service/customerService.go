@@ -2,6 +2,7 @@ package service
 
 import "banking-app/domain"
 
+// primary port - service interface
 // has depenedency on repository interface not concrete implementation
 type CustomerService interface {
 	GetAllCustomers() ([]domain.Customer, error)
