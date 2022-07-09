@@ -1,5 +1,7 @@
 package domain
 
+import "banking-app/errs"
+
 // business logic - what is a customer, domain object
 type Customer struct {
 	Id          string
@@ -19,4 +21,5 @@ type Customer struct {
 // to connect to this port
 type CustomerRepository interface {
 	FindAll() ([]Customer, error)
+	ById(string) (*Customer, *errs.AppError) // returning a pointer in case there is no customer and we want to response with nil
 }

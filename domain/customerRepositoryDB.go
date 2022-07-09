@@ -1,12 +1,14 @@
+// CustomerRepository implementation
 package domain
 
 // note the underscore
 import (
-	"database/sql"
+	"banking-app/errs"
+	"database/sql" // must be used in conjuction with a database driver
 	"log"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql" // the actual driver that implements the interface
 )
 
 type CustomerRepositoryDB struct {
@@ -29,11 +31,32 @@ func (d CustomerRepositoryDB) FindAll() ([]Customer, error) {
 		var c Customer
 		err := rows.Scan(&c.Id, &c.Name, &c.City, &c.Zipcode, &c.DateOfBirth, &c.Status)
 		if err != nil {
-			log.Println("Error whil scanning customres " + err.Error())
+			log.Println("Error while scanning customers " + err.Error())
 		}
 		customers = append(customers, c)
 	}
 	return customers, nil
+}
+
+func (d CustomerRepositoryDB) ById(id string) (*Customer, *errs.AppError) {
+	customerSql := "select customer_id, name, city, zipcode, date_of_birth, status from customers where customer_id=?"
+
+	// at most one customer with id
+	row := d.client.QueryRow(customerSql, id)
+
+	var c Customer
+	err := row.Scan(&c.Id, &c.Name, &c.City, &c.Zipcode, &c.DateOfBirth, &c.Status)
+	if err != nil {
+		// customer does not exist - 404 not found
+		if err == sql.ErrNoRows {
+			return nil, errs.NewNotFoundError("Customer not found")
+		}
+		// database is down - 500 internal server error
+		log.Println("Error while scanning customer " + err.Error())
+		return nil, errs.NewUnexpectedError("Unexpected database error")
+	}
+
+	return &c, nil
 }
 
 func NewCustomerRepositoryDB() CustomerRepositoryDB {
