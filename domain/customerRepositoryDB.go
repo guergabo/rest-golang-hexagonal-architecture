@@ -16,12 +16,23 @@ type CustomerRepositoryDB struct {
 }
 
 // golang database driver used to enable interaction with mysql server, go-sql-driver
-func (d CustomerRepositoryDB) FindAll() ([]Customer, error) {
-	findAllSql := "select customer_id, name, city, zipcode, date_of_birth, status from customers"
-	rows, err := d.client.Query(findAllSql)
+func (d CustomerRepositoryDB) FindAll(status string) ([]Customer, *errs.AppError) {
+
+	var findAllSql string
+	var rows *sql.Rows
+	var err error
+
+	if status == "" {
+		findAllSql = "select customer_id, name, city, zipcode, date_of_birth, status from customers"
+		rows, err = d.client.Query(findAllSql)
+	} else {
+		findAllSql = "select customer_id, name, city, zipcode, date_of_birth, status from customers where status=?"
+		rows, err = d.client.Query(findAllSql, status)
+	}
+
 	if err != nil {
 		log.Println("Error while querying customer table " + err.Error())
-		return nil, err
+		return nil, errs.NewUnexpectedError("unexpected database error")
 	}
 
 	// if no error loop, for sql rows

@@ -3,12 +3,12 @@ package app
 import (
 	"banking-app/service"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
+// part of the wiring
 type CustomerHandlers struct {
 	// to interface not concrete
 	service service.CustomerService
@@ -16,12 +16,17 @@ type CustomerHandlers struct {
 
 // http.ResponseWriter goes back to the client
 // handler should have a dependency of the service
+// 500 or 200, can't be a 404 cause its all
 func (ch *CustomerHandlers) getAllCustomers(w http.ResponseWriter, r *http.Request) {
-	customers, _ := ch.service.GetAllCustomers()
-	// Response header
-	w.Header().Add("Content-Type", "application/json")
-	// Marshshaling data structures to JSON representation
-	json.NewEncoder(w).Encode(customers)
+	status := r.URL.Query().Get("status") // returns empty string if no status key
+	customers, err := ch.service.GetAllCustomers(status)
+
+	if err != nil { // internal server error
+		writeResponse(w, err.Code, err.AsMessage())
+		return
+	}
+	// success
+	writeResponse(w, http.StatusOK, customers)
 }
 
 func (ch *CustomerHandlers) getCustomer(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +34,6 @@ func (ch *CustomerHandlers) getCustomer(w http.ResponseWriter, r *http.Request) 
 	id := vars["id"]
 
 	customer, err := ch.service.GetCustomer(id)
-	fmt.Println(customer)
 	if err != nil {
 		// 404 not found, not dynamic, but don't want to match content and send status code because of future change,
 		// it will break existing code, instead of that we should work on the ids

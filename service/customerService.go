@@ -8,7 +8,7 @@ import (
 // primary port - service interface
 // has depenedency on repository interface not concrete implementation
 type CustomerService interface {
-	GetAllCustomers() ([]domain.Customer, error)
+	GetAllCustomers(string) ([]domain.Customer, *errs.AppError)
 	GetCustomer(string) (*domain.Customer, *errs.AppError)
 }
 
@@ -20,9 +20,18 @@ type DefaultCustomerService struct {
 	repo domain.CustomerRepository
 }
 
-func (s DefaultCustomerService) GetAllCustomers() ([]domain.Customer, error) {
+func (s DefaultCustomerService) GetAllCustomers(status string) ([]domain.Customer, *errs.AppError) {
 	// depenedent on an interface that implements FindAll()
-	return s.repo.FindAll()
+	switch status { // implicit break unlike C++ and Java
+	case "active":
+		status = "1"
+	case "inactive":
+		status = "0"
+	default:
+		status = ""
+	}
+
+	return s.repo.FindAll(status)
 }
 
 func (s DefaultCustomerService) GetCustomer(id string) (*domain.Customer, *errs.AppError) {

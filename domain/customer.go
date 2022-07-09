@@ -20,6 +20,7 @@ type Customer struct {
 // which follows the guideliens of this protocol should be able
 // to connect to this port
 type CustomerRepository interface {
-	FindAll() ([]Customer, error)
-	ById(string) (*Customer, *errs.AppError) // returning a pointer in case there is no customer and we want to response with nil
+	// status "1", "0", "" (all customers)
+	FindAll(status string) ([]Customer, *errs.AppError) // use method and pass stauts
+	ById(string) (*Customer, *errs.AppError)            // returning a pointer in case there is no customer and we want to response with nil
 }
