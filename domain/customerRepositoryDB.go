@@ -1,11 +1,11 @@
-// CustomerRepository implementation
+// Implements Repository Interface (protocol)
 package domain
 
 // note the underscore
 import (
 	"banking-app/errs"
+	"banking-app/logger"
 	"database/sql" // must be used in conjuction with a database driver
-	"log"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql" // the actual driver that implements the interface
@@ -31,7 +31,7 @@ func (d CustomerRepositoryDB) FindAll(status string) ([]Customer, *errs.AppError
 	}
 
 	if err != nil {
-		log.Println("Error while querying customer table " + err.Error())
+		logger.Error("Error while querying customer table " + err.Error())
 		return nil, errs.NewUnexpectedError("unexpected database error")
 	}
 
@@ -42,7 +42,7 @@ func (d CustomerRepositoryDB) FindAll(status string) ([]Customer, *errs.AppError
 		var c Customer
 		err := rows.Scan(&c.Id, &c.Name, &c.City, &c.Zipcode, &c.DateOfBirth, &c.Status)
 		if err != nil {
-			log.Println("Error while scanning customers " + err.Error())
+			logger.Error("Error while scanning customers " + err.Error())
 		}
 		customers = append(customers, c)
 	}
@@ -58,12 +58,12 @@ func (d CustomerRepositoryDB) ById(id string) (*Customer, *errs.AppError) {
 	var c Customer
 	err := row.Scan(&c.Id, &c.Name, &c.City, &c.Zipcode, &c.DateOfBirth, &c.Status)
 	if err != nil {
-		// customer does not exist - 404 not found
+		// customer does not exist - 404 not found, user error
 		if err == sql.ErrNoRows {
 			return nil, errs.NewNotFoundError("Customer not found")
 		}
-		// database is down - 500 internal server error
-		log.Println("Error while scanning customer " + err.Error())
+		// database is down - 500 internal server error, we want to log
+		logger.Error("Error while scanning customer " + err.Error())
 		return nil, errs.NewUnexpectedError("Unexpected database error")
 	}
 

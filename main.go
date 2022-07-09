@@ -49,12 +49,25 @@ Domain (logic) -
 
 Adapters never communicate directly to other adapters this allows very loose
 coupling that will allow replacement etc.
+
+Cross Cutting Concern
+---------------------
+Goes through all the layers of the application
+- Logging: most common format is JSON (timestamp, message), easier to send to log aggregator and can debug, use other libraries for
+structured login
+- Erorr Handling
+- Security
+
 */
 package main
 
-import "banking-app/app"
+import (
+	"banking-app/app"
+	"banking-app/logger"
+)
 
 // HTTP web server
 func main() {
+	logger.Info("Starting the application")
 	app.Start()
 }
