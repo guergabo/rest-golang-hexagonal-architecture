@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// if environment variable is missing we should exit
+// if environment variable is missing we should exit, check all the variables, print out which one etc.
 func sanityCheck() {
 	if os.Getenv("SERVER_ADDRESS") == "" || os.Getenv("SERVER_PORT") == "" {
 		log.Fatal("Environment variable not defined...")
