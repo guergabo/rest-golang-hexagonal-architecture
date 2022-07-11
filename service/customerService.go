@@ -34,7 +34,7 @@ func (s DefaultCustomerService) GetAllCustomers(status string) ([]dto.CustomerRe
 		status = ""
 	}
 
-	customers, err := s.repo.FindAll(status) // can change it to dto.CustomerResponse
+	customers, err := s.repo.FindAll(status)
 	if err != nil {
 		return nil, err
 	}

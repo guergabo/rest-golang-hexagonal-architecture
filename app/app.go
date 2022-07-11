@@ -13,8 +13,13 @@ import (
 
 // if environment variable is missing we should exit, check all the variables, print out which one etc.
 func sanityCheck() {
-	if os.Getenv("SERVER_ADDRESS") == "" || os.Getenv("SERVER_PORT") == "" {
-		log.Fatal("Environment variable not defined...")
+	// server
+	env := []string{"SERVER_ADDRESS", "SERVER_PORT", "DB_USER", "DB_PASSWD", "DB_ADDR", "DB_PORT", "DB_NAME"}
+
+	for _, v := range env {
+		if os.Getenv(v) == "" {
+			log.Fatalf("Environment variable %s not defined", v)
+		}
 	}
 }
 
