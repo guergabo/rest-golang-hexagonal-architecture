@@ -6,6 +6,8 @@ import (
 	"banking-app/errs"
 	"banking-app/logger"
 	"database/sql" // must be used in conjuction with a database driver
+	"fmt"
+	"os"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql" // the actual driver that implements the interface
@@ -92,7 +94,16 @@ func NewCustomerRepositoryDB() CustomerRepositoryDB {
 	// connection to mysql database server
 	// db = client of mysql
 	// dbClient, err := sql.Open("mysql", "root:Popeye101!@/banking")
-	dbClient, err := sqlx.Open("mysql", "root:Popeye101!@/banking")
+	// get rid of hardcoded stuff for production environment
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWD")
+	dbAddr := os.Getenv("DB_ADDR")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
+
+	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbAddr, dbPort, dbName)
+
+	dbClient, err := sqlx.Open("mysql", dataSource)
 	if err != nil {
 		panic(err)
 	}

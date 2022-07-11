@@ -1,16 +1,18 @@
 // Implements Service Interface
+// this is the business logic
 package service
 
 import (
 	"banking-app/domain"
+	"banking-app/dto"
 	"banking-app/errs"
 )
 
 // primary port - service interface
 // has depenedency on repository interface not concrete implementation
 type CustomerService interface {
-	GetAllCustomers(string) ([]domain.Customer, *errs.AppError)
-	GetCustomer(string) (*domain.Customer, *errs.AppError)
+	GetAllCustomers(string) ([]dto.CustomerResponse, *errs.AppError)
+	GetCustomer(string) (*dto.CustomerResponse, *errs.AppError)
 }
 
 // implementation of the interface
@@ -21,7 +23,7 @@ type DefaultCustomerService struct {
 	repo domain.CustomerRepository
 }
 
-func (s DefaultCustomerService) GetAllCustomers(status string) ([]domain.Customer, *errs.AppError) {
+func (s DefaultCustomerService) GetAllCustomers(status string) ([]dto.CustomerResponse, *errs.AppError) {
 	// depenedent on an interface that implements FindAll()
 	switch status { // implicit break unlike C++ and Java
 	case "active":
@@ -32,11 +34,29 @@ func (s DefaultCustomerService) GetAllCustomers(status string) ([]domain.Custome
 		status = ""
 	}
 
-	return s.repo.FindAll(status)
+	customers, err := s.repo.FindAll(status) // can change it to dto.CustomerResponse
+	if err != nil {
+		return nil, err
+	}
+	// can append to empty - A nil map is equivalent to an empty map except that elements can’t be added.
+	response := make([]dto.CustomerResponse, 0)
+	for _, c := range customers {
+		response = append(response, c.ToDto())
+	}
+
+	return response, err
 }
 
-func (s DefaultCustomerService) GetCustomer(id string) (*domain.Customer, *errs.AppError) {
-	return s.repo.ById(id)
+func (s DefaultCustomerService) GetCustomer(id string) (*dto.CustomerResponse, *errs.AppError) {
+	// transform domain object to data transfer object
+	c, err := s.repo.ById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	response := c.ToDto()
+
+	return &response, nil
 }
 
 // need a constructor

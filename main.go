@@ -58,6 +58,12 @@ structured login
 - Erorr Handling
 - Security
 
+DTO (Data Transfer Object)
+--------------------------
+User side -> Business Side (DTO)
+Business Side -> Server Side (Domain)
+domain should not be exposed to the outside world
+businss logic implements primary port
 */
 package main
 

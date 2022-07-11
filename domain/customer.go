@@ -1,8 +1,13 @@
 package domain
 
-import "banking-app/errs"
+import (
+	"banking-app/dto"
+	"banking-app/errs"
+)
 
+// domain object - mapped with server side layer (database)
 // business logic - what is a customer, domain object
+// maps to database model
 type Customer struct {
 	Id          string `db:"customer_id"`
 	Name        string
@@ -10,6 +15,29 @@ type Customer struct {
 	Zipcode     string
 	DateOfBirth string `db:"date_of_birth"`
 	Status      string
+}
+
+func (c Customer) statusAsText() string {
+	// 1 and 0 is internal statement, change to active or inactive
+	statusAsText := "active"
+	if c.Status == "0" {
+		statusAsText = "inactive"
+	}
+
+	return statusAsText
+}
+
+// transferred responsibility of creating dto to the domain
+func (c Customer) ToDto() dto.CustomerResponse {
+	// 1 and 0 is internal statement, change to active or inactive
+	return dto.CustomerResponse{
+		Id:          c.Id,
+		Name:        c.Name,
+		City:        c.City,
+		Zipcode:     c.Zipcode,
+		DateOfBirth: c.DateOfBirth,
+		Status:      c.statusAsText(),
+	}
 }
 
 // primary port - service interface in the service package
