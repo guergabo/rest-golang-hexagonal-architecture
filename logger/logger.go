@@ -15,6 +15,7 @@ var log *zap.Logger
 // computing and assigning initial value for variables declared in a package block.
 // EXECUTING INIT FUNCTIONS INSIDE THE PACKAGE
 func init() {
+	// change to initiate to write to stderr and file
 	var err error
 
 	config := zap.NewProductionConfig()
@@ -23,6 +24,7 @@ func init() {
 	encoderConfig.TimeKey = "timestamp"
 	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	config.EncoderConfig = encoderConfig
+	config.OutputPaths = []string{"/Users/guergabo/Desktop/projects/golang/rest-microservices-api/banking-app/logger/banking.log", "stderr"}
 
 	// looked into the code and did it manually, to create our customer logger
 	log, err = config.Build(zap.AddCallerSkip(1))
@@ -42,7 +44,8 @@ func Info(message string, fields ...zap.Field) {
 
 // want to always wrap to make it depended to our code not the zap in case
 // we ever want to change zap, the cod ein main.go won't break and have to
-// be changed.
+// be changed. in future if we want to make change to our logger and replace
+// it we only need to make those change in this file.
 func Debug(message string, fields ...zap.Field) {
 	log.Debug(message, fields...)
 }

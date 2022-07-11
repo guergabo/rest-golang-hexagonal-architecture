@@ -66,7 +66,7 @@ import (
 	"banking-app/logger"
 )
 
-// HTTP web server
+// HTTP web server - arrangin application as a collection of loosely coupled services
 func main() {
 	logger.Info("Starting the application")
 	app.Start()
