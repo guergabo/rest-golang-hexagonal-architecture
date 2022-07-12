@@ -56,28 +56,53 @@ func (a AccountHandler) newAccount(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a AccountHandler) MakeTransaction(w http.ResponseWriter, r *http.Request) {
+	// // get the account_id and customer_id from the URL
+	// vars := mux.Vars(r)
+	// accountId := vars["account_id"]
+	// customerId := vars["id"]
+
+	// // decoding incoming request
+	// var request dto.TransactionRequest
+	// if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	// 	writeResponse(w, http.StatusBadRequest, err.Error())
+	// 	return
+	// }
+
+	// // build the request object
+	// request.AccountId = accountId
+	// request.CustomerId = customerId
+
+	// // make transaction
+	// account, appError := a.service.MakeTransaction(request)
+
+	// if appError != nil {
+	// 	writeResponse(w, appError.Code, appError.AsMessage())
+	// } else {
+	// 	writeResponse(w, http.StatusOK, account)
+	// }
 	// get the account_id and customer_id from the URL
 	vars := mux.Vars(r)
 	accountId := vars["account_id"]
-	customerId := vars["id"]
+	customerId := vars["customer_id"]
 
-	// decoding incoming request
+	// decode incoming request
 	var request dto.TransactionRequest
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		writeResponse(w, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	// build the request object
-	request.AccountId = accountId
-	request.CustomerId = customerId
-
-	// make transaction
-	account, appError := a.service.MakeTransaction(request)
-
-	if appError != nil {
-		writeResponse(w, appError.Code, appError.AsMessage())
 	} else {
-		writeResponse(w, http.StatusOK, account)
+
+		//build the request object
+		request.AccountId = accountId
+		request.CustomerId = customerId
+
+		// make transaction
+		account, appError := a.service.MakeTransaction(request)
+
+		if appError != nil {
+			writeResponse(w, appError.Code, appError.AsMessage())
+		} else {
+			writeResponse(w, http.StatusOK, account)
+		}
 	}
+
 }

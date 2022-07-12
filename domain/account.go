@@ -7,12 +7,13 @@ import (
 
 // domain object
 type Account struct {
-	AccountId   string
-	CustomerId  string
-	OpeningDate string
-	AccountType string
-	Amount      float64
-	Status      string
+	// need to match to database if not sqlx is confused
+	AccountId   string  `db:"account_id"`
+	CustomerId  string  `db:"customer_id"`
+	OpeningDate string  `db:"opening_date"`
+	AccountType string  `db:"account_type"`
+	Amount      float64 `db:"amount"`
+	Status      string  `db:"status"`
 }
 
 func (a Account) ToNewAccountResponseDto() dto.NewAccountResponse {
