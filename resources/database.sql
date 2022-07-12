@@ -31,7 +31,7 @@ CREATE TABLE `accounts` (
   `status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`account_id`),
   KEY `accounts_FK` (`customer_id`),
-  CONSTRAINT `accounts_FK` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`)
+  CONSTRAINT `accounts_FK` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`) /* interesting line */
 ) ENGINE=InnoDB AUTO_INCREMENT=95471 DEFAULT CHARSET=latin1;
 INSERT INTO `accounts` VALUES
 	(95470,2000,'2020-08-22 10:20:06', 'saving', 6823.23, 1),

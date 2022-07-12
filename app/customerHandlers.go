@@ -52,7 +52,7 @@ func writeResponse(w http.ResponseWriter, code int, data interface{}) {
 	w.WriteHeader(code)
 	// encode returns an error
 	err := json.NewEncoder(w).Encode(data)
-	if err != nil { // something went really wrong
+	if err != nil { // something went really wrong encoding
 		panic(err)
 	}
 }

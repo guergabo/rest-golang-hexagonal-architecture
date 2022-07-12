@@ -29,3 +29,13 @@ func NewUnexpectedError(message string) *AppError {
 		Code:    http.StatusInternalServerError, // returns 500
 	}
 }
+
+func NewValidationError(message string) *AppError {
+	return &AppError{
+		Message: message,
+		Code:    http.StatusUnprocessableEntity, // 422
+		// different then bad request
+		// bad request is something that doesn't match with dto
+		// if it is getting decoded then it is the actual data
+	}
+}

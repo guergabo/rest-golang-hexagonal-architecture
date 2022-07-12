@@ -64,6 +64,8 @@ User side -> Business Side (DTO)
 Business Side -> Server Side (Domain)
 domain should not be exposed to the outside world
 businss logic implements primary port
+
+Handler -> (DTO) -> Service -> (Domain) -> Repository
 */
 package main
 
